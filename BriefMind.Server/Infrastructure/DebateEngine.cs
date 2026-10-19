@@ -8,7 +8,9 @@ public interface IDebateEngine
 {
     Task<ClauseDebateRecord> ConductDebateAsync(
         ContractClause clause,
-        string modelName = "phi3:mini");
+        string defenderModel = "phi3:mini",
+        string auditorModel = "qwen2.5:1.5b",
+        string judgeModel = "phi3:mini");
 }
 
 public class DebateEngine : IDebateEngine
@@ -22,7 +24,9 @@ public class DebateEngine : IDebateEngine
 
     public async Task<ClauseDebateRecord> ConductDebateAsync(
         ContractClause clause,
-        string modelName = "phi3:mini")
+        string defenderModel = "phi3:mini",
+        string auditorModel = "qwen2.5:1.5b",
+        string judgeModel = "phi3:mini")
     {
         var record = new ClauseDebateRecord
         {
@@ -44,12 +48,12 @@ CLAUSE TEXT:
 Provide a direct, concise legal defense:
 """;
 
-        var defenderResponse = await _ollamaClient.GenerateAsync(modelName, defenderPrompt);
+        var defenderResponse = await _ollamaClient.GenerateAsync(defenderModel, defenderPrompt);
         stopwatch.Stop();
 
         record.DefenderArgument = new DebateArgument
         {
-            ModelName = modelName,
+            ModelName = defenderModel,
             Role = DebateRole.Defender,
             ArgumentText = defenderResponse,
             ExecutionTimeMs = stopwatch.ElapsedMilliseconds
@@ -68,12 +72,12 @@ CLAUSE TEXT:
 Provide a direct, concise legal risk critique:
 """;
 
-        var auditorResponse = await _ollamaClient.GenerateAsync(modelName, auditorPrompt);
+        var auditorResponse = await _ollamaClient.GenerateAsync(auditorModel, auditorPrompt);
         stopwatch.Stop();
 
         record.AuditorArgument = new DebateArgument
         {
-            ModelName = modelName,
+            ModelName = auditorModel,
             Role = DebateRole.Auditor,
             ArgumentText = auditorResponse,
             ExecutionTimeMs = stopwatch.ElapsedMilliseconds
@@ -103,7 +107,7 @@ Output a single valid JSON object strictly adhering to this structure:
  }}
 """;
 
-        var judgeJsonResponse = await _ollamaClient.GenerateAsync(modelName, judgePrompt, jsonMode: true);
+        var judgeJsonResponse = await _ollamaClient.GenerateAsync(judgeModel, judgePrompt, jsonMode: true);
         stopwatch.Stop();
         var judgeExecutionTimeMs = stopwatch.ElapsedMilliseconds;
 
@@ -114,7 +118,7 @@ Output a single valid JSON object strictly adhering to this structure:
 
             record.Verdict = new JudgeVerdict
             {
-                ModelName = modelName,
+                ModelName = judgeModel,
                 RiskScore = parsedVerdict?.RiskScore ?? 50,
                 IsContested = parsedVerdict?.IsContested ?? false,
                 ContestReason = parsedVerdict?.ContestReason ?? string.Empty,
@@ -127,7 +131,7 @@ Output a single valid JSON object strictly adhering to this structure:
         {
             record.Verdict = new JudgeVerdict
             {
-                ModelName = modelName,
+                ModelName = judgeModel,
                 RiskScore = 50,
                 IsContested = true,
                 ContestReason = "JSON parsing fallback triggered.",

@@ -1,4 +1,4 @@
-﻿import { useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import './App.css';
 
 type Clause = {
@@ -21,11 +21,13 @@ type UploadResponse = {
 
 type DebateArgument = {
     role: string;
+    modelName?: string;
     argumentText: string;
     executionTimeMs: number;
 };
 
 type Verdict = {
+    modelName?: string;
     riskScore: number;
     isContested: boolean;
     contestReason: string;
@@ -58,6 +60,9 @@ function App() {
     const [error, setError] = useState('');
     const [isUploading, setIsUploading] = useState(false);
     const [isAuditing, setIsAuditing] = useState(false);
+    const [defenderModel, setDefenderModel] = useState('phi3:mini');
+    const [auditorModel, setAuditorModel] = useState('qwen2.5:1.5b');
+    const [judgeModel, setJudgeModel] = useState('phi3:mini');
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
@@ -127,7 +132,11 @@ function App() {
             const response = await fetch(`/api/ContractAudit/documents/${document.documentId}/audit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ modelName: 'phi3:mini' }),
+                body: JSON.stringify({
+                    defenderModel: defenderModel.trim() || 'phi3:mini',
+                    auditorModel: auditorModel.trim() || 'qwen2.5:1.5b',
+                    judgeModel: judgeModel.trim() || 'phi3:mini',
+                }),
             });
 
             if (!response.ok) {
@@ -218,6 +227,56 @@ function App() {
                                 {isAuditing ? 'Running debate...' : 'Run debate'}
                             </button>
                         </div>
+                        <div className="model-config-panel">
+                            <h3 className="model-config-title">Model Configuration (RTX 1650 / 4GB VRAM Compatible)</h3>
+                            <div className="model-config-grid">
+                                <div className="model-field">
+                                    <label htmlFor="defender-model">Defender Model</label>
+                                    <select
+                                        id="defender-model"
+                                        value={defenderModel}
+                                        onChange={(e) => setDefenderModel(e.target.value)}
+                                        disabled={isAuditing}
+                                    >
+                                        <option value="phi3:mini">phi3:mini (Default Provider Defense)</option>
+                                        <option value="qwen2.5:1.5b">qwen2.5:1.5b (~1.5 GB VRAM)</option>
+                                        <option value="qwen2.5:3b">qwen2.5:3b (~2.5 GB VRAM)</option>
+                                        <option value="qwen2.5:0.5b">qwen2.5:0.5b (Ultra-light)</option>
+                                    </select>
+                                </div>
+                                <div className="model-field">
+                                    <label htmlFor="auditor-model">Auditor Model (Adversarial Qwen)</label>
+                                    <select
+                                        id="auditor-model"
+                                        value={auditorModel}
+                                        onChange={(e) => setAuditorModel(e.target.value)}
+                                        disabled={isAuditing}
+                                    >
+                                        <option value="qwen2.5:1.5b">qwen2.5:1.5b (Recommended for RTX 1650)</option>
+                                        <option value="qwen2.5:3b">qwen2.5:3b (High Reasoning ~2.5GB)</option>
+                                        <option value="qwen2.5:0.5b">qwen2.5:0.5b (Ultra-light ~0.6GB)</option>
+                                        <option value="phi3:mini">phi3:mini (~2.3 GB VRAM)</option>
+                                    </select>
+                                </div>
+                                <div className="model-field">
+                                    <label htmlFor="judge-model">Judge Referee Model</label>
+                                    <select
+                                        id="judge-model"
+                                        value={judgeModel}
+                                        onChange={(e) => setJudgeModel(e.target.value)}
+                                        disabled={isAuditing}
+                                    >
+                                        <option value="phi3:mini">phi3:mini (Default Referee)</option>
+                                        <option value="qwen2.5:1.5b">qwen2.5:1.5b</option>
+                                        <option value="qwen2.5:3b">qwen2.5:3b</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <p className="model-vram-note">
+                                💡 Sequential evaluation keeps VRAM footprint safely within 4 GB on NVIDIA GeForce GTX/RTX 1650.
+                            </p>
+                        </div>
+
                         {!auditBundle && <p className="empty-state">Run the debate to compare the defender and auditor arguments.</p>}
                         {auditBundle && (
                             <div className="debate-list">
@@ -226,16 +285,25 @@ function App() {
                                         <h3>{record.sectionIdentifier}</h3>
                                         <div className="debate-columns">
                                             <div>
-                                                <span className="argument-label defender-label">Defender</span>
+                                                <span className="argument-label defender-label">
+                                                    Defender
+                                                    <span className="argument-meta">({record.debateRecord.defenderArgument.modelName || defenderModel})</span>
+                                                </span>
                                                 <p>{record.debateRecord.defenderArgument.argumentText}</p>
                                             </div>
                                             <div>
-                                                <span className="argument-label auditor-label">Auditor</span>
+                                                <span className="argument-label auditor-label">
+                                                    Auditor
+                                                    <span className="argument-meta">({record.debateRecord.auditorArgument.modelName || auditorModel})</span>
+                                                </span>
                                                 <p>{record.debateRecord.auditorArgument.argumentText}</p>
                                             </div>
                                         </div>
                                         <div className="verdict">
-                                            <div className="risk-score">Risk score: {record.debateRecord.verdict.riskScore}/100</div>
+                                            <div className="risk-score">
+                                                Risk score: {record.debateRecord.verdict.riskScore}/100
+                                                <span className="judge-tag">referee: {record.debateRecord.verdict.modelName || judgeModel}</span>
+                                            </div>
                                             <p>{record.debateRecord.verdict.verdictSummary}</p>
                                             {record.debateRecord.verdict.isContested && <p><strong>Contested:</strong> {record.debateRecord.verdict.contestReason}</p>}
                                             {record.debateRecord.verdict.redlineRecommendation && <p><strong>Recommendation:</strong> {record.debateRecord.verdict.redlineRecommendation}</p>}

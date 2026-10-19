@@ -1,4 +1,4 @@
-﻿using BriefMind.Server.Api.DTOs;
+using BriefMind.Server.Api.DTOs;
 using BriefMind.Server.Domain;
 using BriefMind.Server.Infrastructure;
 using BriefMind.Server.Services;
@@ -88,16 +88,25 @@ namespace BriefMind.Server.Api.Controllers
 
             var recordUnits = new List<ProvenanceRecordUnit>();
 
+            string defenderModel = !string.IsNullOrWhiteSpace(request.DefenderModel) ? request.DefenderModel : request.ModelName;
+            string auditorModel = !string.IsNullOrWhiteSpace(request.AuditorModel) ? request.AuditorModel : "qwen2.5:1.5b";
+            string judgeModel = !string.IsNullOrWhiteSpace(request.JudgeModel) ? request.JudgeModel : request.ModelName;
+            string processingSummary = $"{defenderModel} vs {auditorModel}";
+
             // Process sequentially to keep memory stable on 4GB VRAM
             foreach (var clause in targetClauses)
             {
-                var debateRecord = await _debateEngine.ConductDebateAsync(clause, request.ModelName);
+                var debateRecord = await _debateEngine.ConductDebateAsync(
+                    clause,
+                    defenderModel: defenderModel,
+                    auditorModel: auditorModel,
+                    judgeModel: judgeModel);
 
                 var recordUnit = _provenanceService.CreateRecord(
                     clause,
                     extractedDoc,
                     debateRecord,
-                    request.ModelName
+                    processingSummary
                 );
 
                 recordUnits.Add(recordUnit);

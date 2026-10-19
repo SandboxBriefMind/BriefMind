@@ -1,4 +1,4 @@
-﻿.upload-page {
+.upload-page {
     display: grid;
     min-height: 100vh;
     place-items: center;
@@ -308,3 +308,81 @@
         grid-template-columns: 1fr;
     }
 }
+
+.model-config-panel {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.65rem;
+}
+
+.model-config-title {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.model-config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.model-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.model-field label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.model-field select,
+.model-field input {
+    padding: 0.5rem 0.65rem;
+    font-size: 0.875rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.45rem;
+    background: #ffffff;
+    color: #0f172a;
+    font-family: inherit;
+}
+
+.model-field select:focus,
+.model-field input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.model-vram-note {
+    margin: 0.75rem 0 0;
+    font-size: 0.75rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.argument-meta {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    opacity: 0.85;
+    margin-top: 0.2rem;
+}
+
+.judge-tag {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-left: 0.5rem;
+}
+
