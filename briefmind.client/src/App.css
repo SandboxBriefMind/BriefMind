@@ -1,0 +1,310 @@
+﻿.upload-page {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+    background: #f4f6f9;
+    font-family: system-ui, sans-serif;
+}
+
+.upload-card {
+    position: relative;
+    display: grid;
+    gap: 1.25rem;
+    width: min(100%, 43.75rem);
+    padding: 3rem 2.5rem 2.5rem;
+    box-sizing: border-box;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0 0.75rem 2rem rgb(15 23 42 / 8%);
+    overflow: hidden;
+}
+
+.upload-card h1 {
+    margin: 0;
+    color: #132238;
+    font-size: 1.9rem;
+    line-height: 1.2;
+}
+
+.upload-description {
+    margin: -0.25rem 0 1.5rem;
+    color: #63728a;
+    font-size: 1.15rem;
+}
+
+.file-picker {
+    display: grid;
+    justify-items: center;
+    gap: 0.65rem;
+    min-height: 9rem;
+    margin: 1.5rem 0 1rem;
+    padding: 1.25rem;
+    border: 1px dashed #b8c7dd;
+    border-radius: 0.75rem;
+    color: #172238;
+    cursor: pointer;
+    text-align: center;
+}
+
+.file-picker:hover {
+    border-color: #2563eb;
+    background: #fafcff;
+}
+
+.file-picker strong {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 1.1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-picker > span {
+    color: #63728a;
+    font-size: 0.95rem;
+}
+
+.file-picker input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.upload-document-icon {
+    width: 3rem;
+    height: 3rem;
+    fill: none;
+    stroke: #172238;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    stroke-width: 2;
+}
+
+.upload-error {
+    margin: 1rem 0 0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: #fff0f0;
+    color: #b42318;
+    font-size: 0.9rem;
+}
+
+.upload-button,
+.secondary-button {
+    border: 0;
+    border-radius: 0.55rem;
+    font: 600 0.95rem system-ui, sans-serif;
+    cursor: pointer;
+}
+
+.upload-button {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.upload-button:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.upload-button:disabled,
+.secondary-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.secondary-button {
+    padding: 0.65rem 0.9rem;
+    background: #e8efff;
+    color: #2055c7;
+}
+
+.extracted-content {
+    max-height: 20rem;
+    overflow: auto;
+    margin: 1.25rem 0 0;
+    padding: 1rem;
+    border: 1px solid #edf0f5;
+    border-radius: 0.55rem;
+    background: #f8fafc;
+    color: #3f4d63;
+    font: 0.9rem/1.6 ui-monospace, Consolas, monospace;
+    white-space: pre-wrap;
+}
+
+.clause-list,
+.debate-list {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.25rem;
+}
+
+.clause-card,
+.debate-card {
+    padding: 1rem;
+    border: 1px solid #e5eaf1;
+    border-radius: 0.65rem;
+    background: #fbfcfe;
+}
+
+.clause-heading span,
+.argument-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.clause-heading span {
+    color: #718096;
+}
+
+.clause-card p,
+.debate-card p {
+    margin: 0.75rem 0 0;
+    color: #4a5870;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.debate-card h3 {
+    font-size: 1rem;
+}
+
+.debate-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.argument-label {
+    display: inline-block;
+    padding: 0.3rem 0.55rem;
+    border-radius: 0.35rem;
+}
+
+.defender-label {
+    background: #e7f6ed;
+    color: #197044;
+}
+
+.auditor-label {
+    background: #fff0e6;
+    color: #a64b12;
+}
+
+.verdict {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5eaf1;
+}
+
+.risk-score {
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+.empty-state {
+    margin: 1.25rem 0 0;
+    color: #718096;
+}
+
+.audit-page {
+    width: min(100% - 2rem, 72rem);
+    margin: 0 auto;
+    padding: 3rem 0 5rem;
+    color: #172238;
+    font-family: system-ui, sans-serif;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1,
+.panel h2,
+.debate-card h3 {
+    margin: 0;
+}
+
+.page-header h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.04em;
+}
+
+.page-header > p:last-child {
+    margin: 0.75rem 0 0;
+    color: #63728a;
+    font-size: 1.05rem;
+}
+
+.eyebrow,
+.section-label {
+    margin: 0 0 0.4rem;
+    color: #2563eb;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.panel {
+    margin-top: 1.25rem;
+    padding: 1.5rem;
+    border: 1px solid #e1e6ee;
+    border-radius: 0.9rem;
+    background: #ffffff;
+    box-shadow: 0 0.5rem 1.5rem rgb(15 23 42 / 5%);
+}
+
+.upload-panel {
+    margin-top: 0;
+}
+
+.panel-heading,
+.clause-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.panel h2 {
+    font-size: 1.35rem;
+}
+
+.status-badge,
+.metadata {
+    color: #58708f;
+    font-size: 0.875rem;
+}
+
+.status-badge {
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: #e8f7ee;
+    color: #197044;
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .audit-page {
+        width: min(100% - 1rem, 72rem);
+        padding-top: 1.5rem;
+    }
+
+    .panel {
+        padding: 1rem;
+    }
+
+    .panel-heading {
+        flex-direction: column;
+    }
+
+    .debate-columns {
+        grid-template-columns: 1fr;
+    }
+}
