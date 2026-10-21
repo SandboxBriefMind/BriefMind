@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="briefmind.client/briefmind.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="BriefMind.Server/BriefMind.Server.csproj" />
+</Solution>
